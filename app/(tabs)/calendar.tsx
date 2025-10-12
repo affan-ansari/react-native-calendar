@@ -1,107 +1,20 @@
-import type { PropsWithChildren } from "react";
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import {
+  Keyboard,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
-const DirectionLayout = () => {
-  const [direction, setDirection] = useState("ltr");
-
+export default function Example() {
   return (
-    <PreviewLayout
-      label="direction"
-      selectedValue={direction}
-      values={["ltr", "rtl"]}
-      setSelectedValue={setDirection}
-    >
-      <View style={[styles.box, { backgroundColor: "powderblue" }]} />
-      <View style={[styles.box, { backgroundColor: "skyblue" }]} />
-      <View style={[styles.box, { backgroundColor: "steelblue" }]} />
-    </PreviewLayout>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+        <TextInput
+          placeholder="Tap anywhere outside to dismiss keyboard"
+          style={{ borderWidth: 1, borderColor: "#ccc", padding: 10 }}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
-};
-
-type PreviewLayoutProps = PropsWithChildren<{
-  label: string;
-  values: string[];
-  selectedValue: string;
-  setSelectedValue: (value: string) => void;
-}>;
-
-const PreviewLayout = ({
-  label,
-  children,
-  values,
-  selectedValue,
-  setSelectedValue,
-}: PreviewLayoutProps) => (
-  // <View style={{ margin: 10, flex: 1 }}>
-  <View style={{ flex: 1 }}>
-    <Text style={styles.label}>{label}</Text>
-    <View style={styles.row}>
-      {values.map((value) => (
-        <TouchableOpacity
-          key={value}
-          onPress={() => setSelectedValue(value)}
-          style={[styles.button, selectedValue === value && styles.selected]}
-        >
-          <Text
-            style={[
-              styles.buttonLabel,
-              selectedValue === value && styles.selectedLabel,
-            ]}
-          >
-            {value}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-    <View style={[styles.container, { [label]: selectedValue }]}>
-      {children}
-    </View>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 8,
-    backgroundColor: "aliceblue",
-  },
-  box: {
-    width: 50,
-    height: 50,
-  },
-  row: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  button: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 4,
-    backgroundColor: "oldlace",
-    alignSelf: "flex-start",
-    marginHorizontal: "1%",
-    marginBottom: 6,
-    minWidth: "48%",
-    textAlign: "center",
-  },
-  selected: {
-    backgroundColor: "coral",
-    borderWidth: 0,
-  },
-  buttonLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "coral",
-  },
-  selectedLabel: {
-    color: "white",
-  },
-  label: {
-    textAlign: "center",
-    marginBottom: 10,
-    fontSize: 24,
-  },
-});
-
-export default DirectionLayout;
+}

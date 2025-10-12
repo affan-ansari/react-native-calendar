@@ -1,32 +1,12 @@
 import AppButton from "@/components/AppButton";
-import { BottomSheetModal } from "@/components/BottomSheetModal";
-import { CreateEventForm } from "@/components/CreateEventForm";
 import EventCard from "@/components/EventCard";
-import { dummyEvents } from "@/data/dummyEvents";
-import { Event } from "@/types/events";
-import React, { useState } from "react";
+import { useEvents } from "@/contexts/EventsContext";
+import { router } from "expo-router";
+import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function ListViewScreen() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [events, setEvents] = useState(dummyEvents);
-
-  const handleCreateEvent = (eventData: Event) => {
-    // Here you would normally process the date/time and create a proper Date object
-    // For now, we'll just log it
-    console.log("New event created:", eventData);
-
-    // You can add the new event to your events list
-    const newEvent = {
-      id: Date.now().toString(),
-      title: eventData.title,
-      date: new Date().toString(), // You'd parse eventData.date and eventData.time here
-      description: eventData.description,
-    };
-
-    setEvents([newEvent, ...events]);
-    setIsModalVisible(false);
-  };
+  const { events } = useEvents();
 
   return (
     <View style={styles.container}>
@@ -37,7 +17,7 @@ export default function ListViewScreen() {
         />
         <AppButton
           title="Create Event"
-          onPress={() => setIsModalVisible(true)}
+          onPress={() => router.push("/forms/create-event")}
         />
       </View>
       <ScrollView
@@ -48,17 +28,6 @@ export default function ListViewScreen() {
           <EventCard key={event.id} event={event} />
         ))}
       </ScrollView>
-      {/* Create Event Modal */}
-      <BottomSheetModal
-        visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        title="Create New Event"
-      >
-        <CreateEventForm
-          onSubmit={handleCreateEvent}
-          onCancel={() => setIsModalVisible(false)}
-        />
-      </BottomSheetModal>
     </View>
   );
 }
