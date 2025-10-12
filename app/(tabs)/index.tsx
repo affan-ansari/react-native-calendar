@@ -17,7 +17,7 @@ export default function ListViewScreen() {
         />
         <AppButton
           title="Create Event"
-          onPress={() => router.push("/forms/create-event")}
+          onPress={() => router.push("/forms/event-form")}
         />
       </View>
       <ScrollView

@@ -5,9 +5,10 @@ import {
   DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { router } from "expo-router";
-import React, { useMemo, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Pressable,
   ScrollView,
@@ -23,13 +24,24 @@ const fmtISO = (d: Date) =>
     d.getDate()
   ).padStart(2, "0")}`;
 
-const fmtHM = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`; // ⬅️ time format
+const fmtHM = (d: Date) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
-export default function CreateEventScreen() {
+export default function EventFormScreen() {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState<Date | null>(new Date());
   const [description, setDescription] = useState("");
-  const { addEvent } = useEvents();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { addEvent, updateEvent, getEvent } = useEvents();
+
+  const isEditMode = !!id;
+  const existingEvent = id ? getEvent(id) : undefined;
+  useEffect(() => {
+    if (isEditMode && existingEvent) {
+      setTitle(existingEvent.title);
+      setDate(new Date(existingEvent.date));
+      setDescription(existingEvent.description);
+    }
+  }, [isEditMode, existingEvent]);
 
   const isDisabled = !title || !date || !description;
 
@@ -63,19 +75,27 @@ export default function CreateEventScreen() {
     });
   };
 
-  const handleCreate = () => {
+  const handleSubmit = () => {
     if (!title || !date || !description) {
-      alert("Please fill in all fields");
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
-    const newEvent: Event = {
-      id: Date.now().toString(),
+
+    const eventData: Event = {
+      id: isEditMode && id ? id : Date.now().toString(),
       title,
       date: date.toISOString(),
       description,
     };
-    console.log("New event:", newEvent);
-    addEvent(newEvent);
+
+    if (isEditMode && id) {
+      updateEvent(id, eventData);
+      Alert.alert("Success", "Event updated successfully");
+    } else {
+      addEvent(eventData);
+      Alert.alert("Success", "Event created successfully");
+    }
+
     router.back();
   };
 
@@ -135,9 +155,9 @@ export default function CreateEventScreen() {
 
           <View style={styles.buttonContainer}>
             <AppButton
-              title="Create Event"
+              title={isEditMode ? "Update Event" : "Create Event"}
               disabled={isDisabled}
-              onPress={handleCreate}
+              onPress={handleSubmit}
             />
           </View>
         </View>

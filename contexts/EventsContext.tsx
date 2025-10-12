@@ -7,6 +7,7 @@ interface EventsContextType {
   addEvent: (event: Event) => void;
   updateEvent: (id: string, event: Event) => void;
   deleteEvent: (id: string) => void;
+  getEvent: (id: string) => Event | undefined;
 }
 
 const EventsContext = createContext<EventsContextType | undefined>(undefined);
@@ -28,9 +29,13 @@ export function EventsProvider({ children }: { children: ReactNode }) {
     setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
   };
 
+  const getEvent = (id: string) => {
+    return events.find((event) => event.id === id);
+  };
+
   return (
     <EventsContext.Provider
-      value={{ events, addEvent, updateEvent, deleteEvent }}
+      value={{ events, addEvent, updateEvent, deleteEvent, getEvent }}
     >
       {children}
     </EventsContext.Provider>

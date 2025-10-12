@@ -7,7 +7,12 @@ export default function FormsLayout() {
         presentation: "modal",
       }}
     >
-      <Stack.Screen name="create-event" options={{ title: "Create Event" }} />
+      <Stack.Screen
+        name="event-form"
+        options={{
+          title: "Event Form",
+        }}
+      />
     </Stack>
   );
 }
