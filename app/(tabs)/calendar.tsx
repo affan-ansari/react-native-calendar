@@ -10,9 +10,15 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 
+type ImageItem = {
+  id: string;
+  author: string;
+  download_url: string;
+};
+
 export default function Example() {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -53,7 +59,7 @@ export default function Example() {
     }
   };
 
-  const renderImageItem = ({ item }) => (
+  const renderImageItem = ({ item }: { item: ImageItem }) => (
     <View style={styles.imageContainer}>
       <Image
         style={styles.image}
